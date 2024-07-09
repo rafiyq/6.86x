@@ -15,7 +15,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "micromamba create -f env.yml -y"
+	"postCreateCommand": "micromamba create -f env.yml -y && micromamba activate 6_86x"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
