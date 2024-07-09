@@ -193,8 +193,12 @@ def pegasos_single_step_update(
         real valued number with the value of theta_0 after the old updated has
         completed.
     """
-    # Your code here
-    raise NotImplementedError
+    margin_factor = label*(np.dot(feature_vector, theta) + theta_0)
+    is_violation = (1. if margin_factor <= 1 else 0.)
+    return (
+        theta   + eta * (is_violation*label*feature_vector - L*theta  ),
+        theta_0 + eta * (is_violation*label*1                         )
+    )
 
 
 
@@ -225,8 +229,17 @@ def pegasos(feature_matrix, labels, T, L):
         the value of the theta_0, the offset classification parameter, found
         after T iterations through the feature matrix.
     """
-    # Your code here
-    raise NotImplementedError
+    (nsamples, nfeatures) = feature_matrix.shape
+    theta = np.zeros(nfeatures)
+    theta_0 = 0
+    count = 0
+    for t in range(T):
+        for i in get_order(nsamples):
+            count += 1
+            eta = 1.0 / np.sqrt(count)
+            (theta, theta_0) = pegasos_single_step_update(
+                feature_matrix[i], labels[i], L, eta, theta, theta_0)
+    return (theta, theta_0)
 
 
 
