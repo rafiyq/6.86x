@@ -87,8 +87,9 @@ def perceptron_single_step_update(
         the updated feature-coefficient parameter `theta` as a numpy array
         the updated offset parameter `theta_0` as a floating point number
     """
-    # Your code here
-    raise NotImplementedError
+    if label * (np.dot(current_theta, feature_vector) + current_theta_0) <= 1e-7:
+        return (current_theta + label * feature_vector, current_theta_0 + label)
+    return (current_theta, current_theta_0) 
 
 
 
@@ -114,14 +115,14 @@ def perceptron(feature_matrix, labels, T):
         the offset parameter `theta_0` as a floating point number
             (found also after T iterations through the feature matrix).
     """
-    # Your code here
-    raise NotImplementedError
+    (nsamples, nfeatures) = feature_matrix.shape
+    theta = np.zeros(nfeatures)
+    theta_0 = 0.0
     for t in range(T):
         for i in get_order(nsamples):
-            # Your code here
-            raise NotImplementedError
-    # Your code here
-    raise NotImplementedError
+            theta, theta_0 = perceptron_single_step_update(
+                feature_matrix[i], labels[i], theta, theta_0)
+    return (theta, theta_0)
 
 
 
@@ -151,8 +152,18 @@ def average_perceptron(feature_matrix, labels, T):
         the average offset parameter `theta_0` as a floating point number
             (averaged also over T iterations through the feature matrix).
     """
-    # Your code here
-    raise NotImplementedError
+    (nsamples, nfeatures) = feature_matrix.shape
+    theta     = np.zeros(nfeatures)
+    theta_sum = np.zeros(nfeatures)
+    theta_0 = 0.0
+    theta_0_sum = 0.0
+    for _ in range(T):
+        for i in get_order(nsamples):
+            theta, theta_0 = perceptron_single_step_update(
+                feature_matrix[i], labels[i], theta, theta_0)
+            theta_sum += theta
+            theta_0_sum += theta_0
+    return (theta_sum / (nsamples * T), theta_0_sum / (nsamples * T))
 
 
 def pegasos_single_step_update(
